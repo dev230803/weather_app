@@ -15,10 +15,13 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+ 
   final _textController = TextEditingController();
   String currentCity = 'Delhi';
   late Future<Map<String, dynamic>> weather = getCurrentWeather(currentCity);
   Future<Map<String, dynamic>> getCurrentWeather(String city) async {
+   
+    
     try {
       final res = await http.get(
         Uri.parse(
@@ -36,7 +39,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
     weather = getCurrentWeather(currentCity);
   }
@@ -53,6 +56,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
         actions: [
           IconButton(
               onPressed: () {
+                
                 setState(() {
                   weather = getCurrentWeather(currentCity);
                 });
@@ -65,6 +69,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
           future: weather,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
+              
               return  Container(
                  alignment: Alignment.center,
                 padding:const  EdgeInsets.symmetric(vertical: 350),
@@ -72,6 +77,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
               );
             }
             if (snapshot.hasError) {
+                  
               return Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(vertical: 350),
@@ -81,6 +87,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
             final currentData = data!['list'][0];
             final currentTemp = currentData['main']['temp'];
             final currentSky = currentData['weather'][0]['main'];
+            IconData currentIcon=Icons.sunny;
+            if(currentSky=="Rain") {
+              currentIcon=Icons.cloudy_snowing;
+            }
+            if(currentSky=="Clouds") {
+              currentIcon=Icons.cloud;
+            }
             final currentPressure = currentData['main']['pressure'];
             final currentWind = currentData['wind']['speed'];
             final currentHumidity = currentData['main']['humidity'];
@@ -98,7 +111,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       }
                       setState(() {
                         currentCity = _textController.text;
-                        print(currentCity);
+                        
                         weather = getCurrentWeather(currentCity);
                       });
                     },
@@ -125,6 +138,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               children: [
                                 Text(
                                   currentCity,
+                                  
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 24),
@@ -141,9 +155,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                   height: 10,
                                 ),
                                 Icon(
-                                  currentSky == 'Clouds' || currentSky == 'Rain'
-                                      ? Icons.cloud
-                                      : Icons.sunny,
+                                  currentIcon,
                                   size: 64,
                                 ),
                                 const SizedBox(
@@ -180,13 +192,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         final hourlyData = data['list'][index + 1];
                         final time =
                             DateTime.parse(hourlyData['dt_txt'].toString());
+                        IconData hourIcon=Icons.sunny;
+                        if(hourlyData['weather'][0]['main'] =='Clouds'){
+                          hourIcon=Icons.cloud;
+                        }
+                        if(hourlyData['weather'][0]['main'] =='Rain'){
+                          hourIcon=Icons.cloudy_snowing;
+                        }
                         return HorlyForecast(
                             time: DateFormat.j().format(time),
-                            icon: hourlyData['weather'][0]['main'] ==
-                                        'Clouds' ||
-                                    hourlyData['weather'][0]['main'] == 'Rain'
-                                ? Icons.cloud
-                                : Icons.sunny,
+                            icon: hourIcon,
                             temp: hourlyData['main']['temp']);
                       },
                     ),

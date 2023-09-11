@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'package:flutter/material.dart';
 
 class additional_info extends StatelessWidget {
@@ -17,10 +19,10 @@ class additional_info extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(icon,size: 45,),
-                      SizedBox(height: 8,),
+                      const SizedBox(height: 8,),
                       Text(label),
-                      SizedBox(height: 8,),
-                      Text(value,style: TextStyle(fontWeight: FontWeight.bold),),
+                      const SizedBox(height: 8,),
+                      Text(value,style: const TextStyle(fontWeight: FontWeight.bold),),
                     ],
                   );
   }
