@@ -15,13 +15,10 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
- 
   final _textController = TextEditingController();
   String currentCity = 'Delhi';
   late Future<Map<String, dynamic>> weather = getCurrentWeather(currentCity);
   Future<Map<String, dynamic>> getCurrentWeather(String city) async {
-   
-    
     try {
       final res = await http.get(
         Uri.parse(
@@ -39,7 +36,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   void initState() {
-    
     super.initState();
     weather = getCurrentWeather(currentCity);
   }
@@ -56,7 +52,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                
                 setState(() {
                   weather = getCurrentWeather(currentCity);
                 });
@@ -69,30 +64,32 @@ class _WeatherScreenState extends State<WeatherScreen> {
           future: weather,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              
-              return  Container(
-                 alignment: Alignment.center,
-                padding:const  EdgeInsets.symmetric(vertical: 350),
+              return Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(vertical: 350),
                 child: const CircularProgressIndicator(),
               );
             }
             if (snapshot.hasError) {
-                  
               return Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 350),
-                child: Text(snapshot.error.toString()));
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 350),
+                  child: Text(snapshot.error.toString()));
             }
             final data = snapshot.data;
             final currentData = data!['list'][0];
             final currentTemp = currentData['main']['temp'];
             final currentSky = currentData['weather'][0]['main'];
-            IconData currentIcon=Icons.sunny;
-            if(currentSky=="Rain") {
-              currentIcon=Icons.cloudy_snowing;
+            Image currentIcon = Image.asset(
+              'assets/images/sun.png',
+              height: 95,
+            );
+
+            if (currentSky == "Clouds") {
+              currentIcon = Image.asset('assets/images/cloud.png', height: 95);
             }
-            if(currentSky=="Clouds") {
-              currentIcon=Icons.cloud;
+            if (currentSky == "Rain") {
+              currentIcon = Image.asset('assets/images/rain.png', height: 95);
             }
             final currentPressure = currentData['main']['pressure'];
             final currentWind = currentData['wind']['speed'];
@@ -106,12 +103,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     controller: _textController,
                     textCapitalization: TextCapitalization.words,
                     onSubmitted: (value) {
-                      if(_textController.text.isEmpty){
+                      if (_textController.text.isEmpty) {
                         return;
                       }
                       setState(() {
                         currentCity = _textController.text;
-                        
+
                         weather = getCurrentWeather(currentCity);
                       });
                     },
@@ -138,7 +135,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               children: [
                                 Text(
                                   currentCity,
-                                  
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 24),
@@ -154,10 +150,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Icon(
-                                  currentIcon,
-                                  size: 64,
-                                ),
+                                currentIcon,
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -192,16 +185,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         final hourlyData = data['list'][index + 1];
                         final time =
                             DateTime.parse(hourlyData['dt_txt'].toString());
-                        IconData hourIcon=Icons.sunny;
-                        if(hourlyData['weather'][0]['main'] =='Clouds'){
-                          hourIcon=Icons.cloud;
+                        String hourIcon = ('assets/images/sun.png');
+                        if (hourlyData['weather'][0]['main'] == 'Clouds') {
+                          hourIcon = ('assets/images/cloud.png');
                         }
-                        if(hourlyData['weather'][0]['main'] =='Rain'){
-                          hourIcon=Icons.cloudy_snowing;
+                        if (hourlyData['weather'][0]['main'] == 'Rain') {
+                          hourIcon = ('assets/images/rain.png');
                         }
                         return HorlyForecast(
                             time: DateFormat.j().format(time),
-                            icon: hourIcon,
+                            image: hourIcon,
                             temp: hourlyData['main']['temp']);
                       },
                     ),

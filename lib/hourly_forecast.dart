@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class HorlyForecast extends StatelessWidget {
-  const HorlyForecast({super.key, required this.time, required this.icon, required this.temp});
+  const HorlyForecast({super.key, required this.time, required this.image, required this.temp});
   final String time;
-  final IconData icon;
+  final String image;
   final dynamic temp;
   @override
   Widget build(BuildContext context) {
@@ -27,10 +27,7 @@ class HorlyForecast extends StatelessWidget {
             const SizedBox(
               height: 8,
             ),
-            Icon(
-              icon,
-              size: 32,
-            ),
+            Image.asset(image,height: 40,),
             const SizedBox(
               height: 8,
             ),
@@ -41,3 +38,4 @@ class HorlyForecast extends StatelessWidget {
     );
   }
 }
+
